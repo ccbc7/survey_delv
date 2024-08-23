@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    ports:
+      - 7777:7777
+      - 2222:2222
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+  # frontend:
+  #   build:
+  #     context: ./frontend/
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - 3000:3000
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    ports:
+      - 5555:5555
+    volumes:
+      - postgres-init:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: always
+    user: root
+
+volumes:
+  postgres-init:
+  postgres-data:
